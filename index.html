@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Supabase Technical Documentation</title>
+  </head>
+  <body>
+    <nav id="navbar">
+      <header>Supabase Documentation</header>
+      <ul>
+        <li><a class="nav-link" href="#Introduction">Introduction</a></li>
+        <li><a class="nav-link" href="#Database_Schema">Database Schema</a></li>
+        <li><a class="nav-link" href="#Row_Level_Security_(RLS)">Row Level Security (RLS)</a></li>
+        <li><a class="nav-link" href="#Database_Functions">Database Functions</a></li>
+        <li><a class="nav-link" href="#Triggers">Triggers</a></li>
+        <li><a class="nav-link" href="#API_Integration">API Integration</a></li>
+        <li><a class="nav-link" href="#Best_Practices">Best Practices</a></li>
+      </ul>
+    </nav>
+
+    <main id="main-doc">
+      <section class="main-section" id="Introduction">
+        <header>Introduction</header>
+        <article>
+          <p>
+            Supabase is an open-source Backend-as-a-Service (BaaS) platform that provides developers with a comprehensive solution for managing databases, authentication, and file storage. It serves as an alternative to Firebase, enabling the rapid development of modern applications with a full Postgres database.
+          </p>
+          <p>
+            Example installation with <code>npm install @supabase/supabase-js</code>
+          </p>
+          <p>
+            Supabase offers features such as instant APIs, real-time subscriptions, and edge functions, making it easier for developers to build scalable applications. It is designed to streamline the backend development process, allowing for quick integration and deployment of various services. With its user-friendly web interface, developers can efficiently manage their projects and leverage the power of Postgres for robust data handling.
+          </p>
+        </article>
+      </section>
+
+      <section class="main-section" id="Database_Schema">
+        <header>Database Schema</header>
+        <article>
+          <p>
+            Begin by defining the structure of your tables, ensuring proper naming conventions and relationships are established. 
+            Example: <code>CREATE TABLE users (id uuid PRIMARY KEY, name text);</code>
+          </p>
+          <p>
+            Utilize Postgres data types such as UUID, timestamptz, text, integer, and boolean to accurately represent your data. Implement foreign key constraints to define relationships, including one-to-many and many-to-many.
+            </p>
+          <p>
+            Use indexes to optimize queries, e.g. <code>CREATE INDEX idx_users_name ON users(name);</code>
+          </p>
+          <p>
+            Additionally, leverage Postgres extensions like pgcrypto and uuid-ossp to enhance functionality.
+          </p>
+        </article>
+      </section>
+
+      <section class="main-section" id="Row_Level_Security_(RLS)">
+        <header>Row Level Security (RLS)</header>
+        <article>
+          <p>
+            Activate Row Level Security on all tables by default to ensure data protection. Example: <code>ALTER TABLE users ENABLE ROW LEVEL SECURITY;</code>
+          </p>
+          <p>Policy Types:</p> <ul> <li>SELECT policies for data retrieval</li> <li>INSERT policies for data creation</li> <li>UPDATE policies for data modification</li> <li>DELETE policies for data removal</li> </ul> <p>
+          <p>
+            Example Policy: <code>CREATE POLICY select_own ON users FOR SELECT USING (auth.uid() = id);</code>
+          </p>
+          <p>
+            Follow security best practices by implementing default deny policies and granular permission controls, and consider role-based access control patterns. Integrate JWT claims from Supabase auth into your policies for enhanced security.
+          </p>
+        </article>
+      </section>
+
+      <section class="main-section" id="Database_Functions">
+        <header>Database Functions</header>
+        <article>
+          <p>
+            Create stored procedures in PostgreSQL to handle complex operations efficiently. Define input and output parameters for your functions and use SECURITY DEFINER when elevated privileges are necessary.
+          </p>
+          <p>
+            Create stored procedures in PostgreSQL:  
+            <code>CREATE FUNCTION get_users() RETURNS SETOF users AS $$ SELECT * FROM users; $$ LANGUAGE sql;</code>
+          </p>
+          <p>
+            Specify appropriate return types, such as SETOF, TABLE, or JSON, and implement proper exception handling using RAISE statements to manage errors effectively.
+          </p>
+        </article>
+      </section>
+
+      <section class="main-section" id="Triggers">
+        <header>Triggers</header>
+        <article>
+          <p>
+            Example Trigger for auto-updating timestamp:  
+            <code>CREATE TRIGGER set_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION trigger_set_timestamp();</code>
+          </p>
+        </article>
+      </section>
+
+      <section class="main-section" id="API_Integration">
+        <header>API Integration</header>
+        <article>
+          <p>
+            Establish triggers to execute actions automatically before or after INSERT, UPDATE, or DELETE operations. Create trigger functions that encapsulate the logic you want to execute.
+          </p>
+          <p>
+            Fetch data with Supabase client:  
+            <code>const { data, error } = await supabase.from('users').select('*');</code>
+          </p>
+          <p>
+            Common use cases for triggers include audit logging, data validation, and automated timestamp updates for <i>created_at<i/> and <i>updated_at</i> fields.
+          </p>
+          <p>
+            Be mindful of performance considerations and monitor the impact of trigger execution on your database.
+          </p>
+        </article>
+      </section>
+
+      <section class="main-section" id="Best_Practices">
+        <header>Best Practices</header>
+        <article>
+          <ul>
+            <li>Maintain separate environments (dev, staging, prod).</li>
+            <li>Run regular backups using <code>pg_dump mydb > backup.sql</code></li>
+            <li>Implement migrations with tools like <code>supabase db push</code></li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+  </body>
+</html>
